@@ -148,7 +148,7 @@ type testcase struct {
 	Type            int
 }
 
-var testcases []testcase
+var testcases []*testcase
 var currentJobIndex int
 
 func init() {
@@ -161,7 +161,7 @@ func init() {
 	file, err := ioutil.ReadFile("/config/scenarios.json")
 	if err != nil {
 		fmt.Printf("Cannot open config file (fallback to default): %v\n", err)
-		testcases = []testcase{
+		testcases = []*testcase{
 			{SourceNode: "netperf-w1", DestinationNode: "netperf-w2", Label: "1 iperf TCP. Same VM using Pod IP", Type: iperfTcpTest, ClusterIP: false, MSS: mssMin},
 			{SourceNode: "netperf-w1", DestinationNode: "netperf-w2", Label: "2 iperf TCP. Same VM using Virtual IP", Type: iperfTcpTest, ClusterIP: true, MSS: mssMin},
 			{SourceNode: "netperf-w1", DestinationNode: "netperf-w3", Label: "3 iperf TCP. Remote VM using Pod IP", Type: iperfTcpTest, ClusterIP: false, MSS: mssMin},
@@ -177,6 +177,7 @@ func init() {
 			{SourceNode: "netperf-w3", DestinationNode: "netperf-w2", Label: "13 netperf. Remote VM using Virtual IP", Type: netperfTest, ClusterIP: true},
 		}
 	} else {
+		fmt.Printf("Reading config file\n")
 		err := json.Unmarshal(file, &testcases)
 		if err != nil {
 			fmt.Printf("Cannot parse json file: %v\n", err)
